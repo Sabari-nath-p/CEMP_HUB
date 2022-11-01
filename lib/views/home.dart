@@ -1,6 +1,9 @@
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
-import 'package:bubble/bubble.dart';
 import 'package:cemp_hub/color_const.dart';
+import 'package:cemp_hub/views/chatlist.dart';
+import 'package:cemp_hub/views/profile.dart';
+import 'package:cemp_hub/widgets/grpmessaga.dart';
+import 'package:cemp_hub/widgets/meetup.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
@@ -16,9 +19,17 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   var _selectedIndex = 0;
-
+  chatList ch = new chatList();
+  profile pp = new profile();
   bool keyboard = true;
-  List message = [];
+  List message = [
+    meetup(
+      loc: "Sabus Tea shop",
+      //   name: "Sabarinath",
+      dt: "29-11-2002 2:00 PM",
+      gender: "male",
+    ),
+  ];
   TextEditingController typbox = TextEditingController();
 
   @override
@@ -89,14 +100,25 @@ class _HomeState extends State<Home> {
                     ],
                   ),
                 )),
+            if (_selectedIndex == 2) ch, // chatlist view
+            if (_selectedIndex == 3) pp, // profile view
             if (_selectedIndex == 0)
               Positioned(
                   top: h * .07,
+                  bottom: w * .17,
                   width: w,
-                  height: h - w * .07,
+                  // height: h - w * .07 - -w * .17,
                   child: SingleChildScrollView(
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
+                        grpmessageright(
+                            'Sabarinath',
+                            'Test message for testing padding and margin of the message card ',
+                            'male'),
+                        grpmessageright(
+                            'Sabarinath', 'Test message for testing', 'male'),
                         for (int i = 0; i < message.length; i++) message[i],
                       ],
                     ),
@@ -139,7 +161,8 @@ class _HomeState extends State<Home> {
                           onTap: () {
                             if (typbox.text != '') {
                               setState(() {
-                                message.add(mess(typbox.text));
+                                message.add(grpmessageright(
+                                    'Soman', typbox.text, 'male'));
                                 typbox.clear();
                               });
                             }
@@ -160,13 +183,4 @@ class _HomeState extends State<Home> {
     )));
   }
 
-  mess(String text) {
-    return Bubble(
-      margin: BubbleEdges.only(top: 10, right: 40),
-      alignment: Alignment.topLeft,
-      nip: BubbleNip.leftTop,
-      color: Color.fromRGBO(225, 255, 199, 1.0),
-      child: Text(text, textAlign: TextAlign.left),
-    );
-  }
 }

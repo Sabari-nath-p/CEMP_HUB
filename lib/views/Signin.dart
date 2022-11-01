@@ -2,9 +2,7 @@ import 'package:cemp_hub/views/home.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../constants.dart';
-import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
-import '../controller/simple_ui_controller.dart';
 
 class signin extends StatefulWidget {
   const signin({Key? key}) : super(key: key);
