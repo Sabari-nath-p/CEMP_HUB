@@ -1,34 +1,42 @@
 {
   "project_info": {
-    "project_number": "204083271542",
-    "project_id": "chat-b8309",
-    "storage_bucket": "chat-b8309.appspot.com"
+    "project_number": "1039154083751",
+    "firebase_url": "https://cemp-hub-default-rtdb.firebaseio.com",
+    "project_id": "cemp-hub",
+    "storage_bucket": "cemp-hub.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:204083271542:android:6fb2ec3c349f59173e4c57",
+        "mobilesdk_app_id": "1:1039154083751:android:6fd4ee00f8304ab6476882",
         "android_client_info": {
           "package_name": "com.example.cemp_hub"
         }
       },
       "oauth_client": [
         {
-          "client_id": "204083271542-cvjdglnoq59phbq63omimv2cd4p5n7f1.apps.googleusercontent.com",
+          "client_id": "1039154083751-vm74ah3s5s34p3tp9jj036emrtts49q5.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCH6FjADfKCEdYugTAsGAMwuIRWVPNk4tI"
+          "current_key": "AIzaSyAGzDXpCRuSJXbVj-TEhquptvu--8-G0gk"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "204083271542-cvjdglnoq59phbq63omimv2cd4p5n7f1.apps.googleusercontent.com",
+              "client_id": "1039154083751-vm74ah3s5s34p3tp9jj036emrtts49q5.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "1039154083751-6vndotoqjhhqgonduec1mhktugimv725.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.cempHub"
+              }
             }
           ]
         }

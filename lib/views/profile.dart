@@ -4,17 +4,51 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class profile extends StatefulWidget {
-  const profile({super.key});
+  String uid;
+  profile({super.key, this.uid = 'NIL'});
 
   @override
   State<profile> createState() => _profileState();
 }
 
 class _profileState extends State<profile> {
+  String name = '', status = '', interest = '', cid = '', sex = '';
+  var tags = null;
+  getdata() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    name = await preferences.getString('UID').toString();
+    status = await preferences.getString('STAUTS').toString();
+    interest = await preferences.getString('INTEREST').toString();
+    sex = await preferences.getString('SEX').toString();
+    tags = interest.split("#");
+    print('Working');
+    print(status);
+    setState(() {});
+  }
+
+  check() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    cid = await preferences.getString('ID').toString();
+
+    if (cid == widget.uid || widget.uid == "NIL") {
+      getdata();
+      print('checking');
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    check();
+  }
+
   @override
   Widget build(BuildContext context) {
+    // check();
     double w = MediaQuery.of(context).size.width;
     double h = MediaQuery.of(context).size.height;
     return SafeArea(
@@ -75,13 +109,18 @@ class _profileState extends State<profile> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        '  Neynu',
+                        '  $name',
                         textAlign: TextAlign.center,
                         style: usrid(),
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: [Icon(Icons.female), Text('Commited')],
+                        children: [
+                          Icon((sex == 'Male') ? Icons.male : Icons.female),
+                          (status == 'SINGLE')
+                              ? Text('SINGLE')
+                              : Text('Commited')
+                        ],
                       ),
                       SizedBox(
                         height: 10,
@@ -134,17 +173,17 @@ class _profileState extends State<profile> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          skill('sweet'),
+                          if (tags != null) skill(tags[0]),
                           Icon(
                             Icons.circle,
                             size: 10,
                           ),
-                          skill('Romantic'),
+                          if (tags != null) skill(tags[1]),
                           Icon(
                             Icons.circle,
                             size: 10,
                           ),
-                          skill('Singer')
+                          if (tags != null) skill(tags[2]),
                         ],
                       ),
                       SizedBox(
@@ -154,12 +193,12 @@ class _profileState extends State<profile> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          skill('Dancer'),
+                          if (tags != null) skill(tags[3]),
                           Icon(
                             Icons.circle,
                             size: 10,
                           ),
-                          skill('Cutiee'),
+                          if (tags != null) skill(tags[4]),
                         ],
                       ),
                     ],
@@ -180,6 +219,7 @@ class _profileState extends State<profile> {
       child: Text(
         sk,
         style: TextStyle(
+          fontSize : 16,
           fontWeight: FontWeight.w500,
         ),
       ),

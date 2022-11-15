@@ -1,8 +1,10 @@
 import 'package:cemp_hub/views/home.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../constants.dart';
 import 'package:lottie/lottie.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class signin extends StatefulWidget {
   const signin({Key? key}) : super(key: key);
@@ -14,12 +16,35 @@ class signin extends StatefulWidget {
 class _signinState extends State<signin> {
   TextEditingController nameController = TextEditingController(),
       passwordController = TextEditingController();
+
   //SimpleUIController simpleUIController = Get.find<SimpleUIController>();
+
+  final CollectionReference db = FirebaseFirestore.instance.collection('User');
+  checkisLoged() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String check = pref.getString('LOGIN').toString();
+    if (check == 'IN') {
+      Navigator.pop(context);
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: ((context) => Home())));
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    checkisLoged();
+  }
+
   @override
   Widget build(BuildContext context) {
     double w = MediaQuery.of(context).size.width;
     double h = MediaQuery.of(context).size.height;
     var size = MediaQuery.of(context).size;
+
+    bool btstatus =
+        false; // to identify login button background working is completed
     return SafeArea(
         child: Container(
       width: w,
@@ -146,13 +171,78 @@ class _signinState extends State<signin> {
                     ),
                     onPressed: () {
                       // Validate returns true if the form is valid, or false otherwise.
-                      Navigator.of(context).push(
-                          MaterialPageRoute(builder: ((context) => Home())));
+                      if (!btstatus) {
+                        setState(() {
+                          btstatus = true;
+                        });
+
+                        String id = nameController.text.trim().toString();
+                        print(id);
+                        String pass = passwordController.text.trim().toString();
+                        db.doc(id).get().then((value) async {
+                          if (value.exists && value.get('ACTIVATE') == 'IN') {
+                            if (value.get('PASSWORD') == pass) {
+                              Fluttertoast.showToast(msg: 'Login ready');
+                              btstatus = true;
+
+                              SharedPreferences preferences =
+                                  await SharedPreferences.getInstance();
+                              preferences.setString('ID', id);
+                              preferences.setString(
+                                  'SEX', '${value.get('GENDER')}');
+                              preferences.setString(
+                                  'INTEREST', '${value.get('INTEREST')}');
+                              preferences.setString(
+                                  'UID', '${value.get('ID')}');
+                              preferences.setString(
+                                  'STAUTS', '${value.get('STATUS')}');
+                              preferences.setString("LOGIN", 'IN');
+                              Navigator.pop(context);
+                              Navigator.of(context).push(
+                                  MaterialPageRoute(builder: (ctx) => Home()));
+                              setState(() {});
+                            } else {
+                              Fluttertoast.showToast(msg: 'Invalid Entry');
+                              setState(() {});
+                              btstatus = false;
+                            }
+                          } else if (value.get('ACTIVATE') != 'IN') {
+                            Fluttertoast.showToast(
+                                msg: 'Please Register to Login');
+                            btstatus = false;
+                            setState(() {});
+                          } else {
+                            Fluttertoast.showToast(
+                                msg: 'Unknown account please contact admin');
+                            btstatus = false;
+                            setState(() {});
+                          }
+                        }).onError((error, stackTrace) {
+                          btstatus = false;
+                          setState(() {});
+                          Fluttertoast.showToast(
+                              msg: 'Something went to wrong');
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: ((context) => Home())));
+                        });
+                      }
                     },
-                    child: Text(
-                      'Login',
-                      style: TextStyle(
-                          fontWeight: FontWeight.w600, fontSize: w * .07),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Login',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w600, fontSize: w * .07),
+                        ),
+                        if (btstatus)
+                          SizedBox(
+                              width: 100,
+                              height: 100,
+                              child: LottieBuilder.network(
+                                'https://assets8.lottiefiles.com/packages/lf20_tsxbtrcu.json',
+                              ))
+                      ],
                     ),
                   ),
                 ),
